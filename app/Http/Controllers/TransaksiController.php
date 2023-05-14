@@ -22,7 +22,7 @@ class TransaksiController extends Controller
             'badge' => 'Transaksi',
             'modal' => Modal::first(),
             'jeniss' => DB::table('jenis_transaksi')->orderBy('jenis_transaksi', 'asc')->get(),
-            'transaksis' => Transaksi::all(), 
+            'transaksis' => Transaksi::all(),
         ];
 
         return view('transaksi.index', $data);
@@ -41,7 +41,7 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
-       $rules = $request->validate([
+        $rules = $request->validate([
             'nama' => 'required',
             'jenis' => 'required',
             'jenis2' => 'required',
@@ -59,38 +59,38 @@ class TransaksiController extends Controller
         $jenis2 = $request->jenis2;
         $tanggal = $request->tanggal;
         $status = $request->status;
-        $debit = $request->debit;
-        $kredit = $request->kredit;
-        $laba = $request->laba;
+        $debit = preg_replace('/[,]/', '', $request->debit);
+        $kredit = preg_replace('/[,]/', '', $request->kredit);
+        $laba = preg_replace('/[,]/', '', $request->laba);
 
-        if($status == 'LUNAS(DEBIT)'){
-            $saldo_d = $saldo->saldo_d+$debit-$kredit;
-			$saldo_k = $saldo->saldo_k-$debit+$kredit;
-			$hutang = '0';
-        } else if($status == 'LUNAS(KREDIT)'){
+        if ($status == 'LUNAS(DEBIT)') {
+            $saldo_d = $saldo->saldo_d + $debit - $kredit;
+            $saldo_k = $saldo->saldo_k - $debit + $kredit;
+            $hutang = '0';
+        } else if ($status == 'LUNAS(KREDIT)') {
             $saldo_d = $saldo->saldo_d;
-			$saldo_k = $saldo->saldo_k-$debit+$kredit;
-			$hutang = '0';
-        } else if($status == 'BELUM LUNAS'){
+            $saldo_k = $saldo->saldo_k - $debit + $kredit;
+            $hutang = '0';
+        } else if ($status == 'BELUM LUNAS') {
             $saldo_d = $saldo->saldo_d;
-			$saldo_k = $saldo->saldo_k-$debit+$kredit;
-			$hutang = $debit+$kredit;
-        } else if($status == 'PINJAMAN') {
-            $saldo_d = $saldo->saldo_d-$debit;
-			$saldo_k = $saldo->saldo_k;
-			$hutang = $debit;
-        } else if($status == 'LABA'){
-            $saldo_d = $saldo->saldo_d-$debit;
-			$saldo_k = $saldo->saldo_k;
-			$hutang = '0';
-        } else if($status == 'PENAMBAHAN'){
-            $saldo_d = $saldo->saldo_d+$debit;
-			$saldo_k = $saldo->saldo_k+$kredit;
-			$hutang = '0';
-        } else if($status == 'PENGURANGAN'){
-            $saldo_d = $saldo->saldo_d-$debit;
-			$saldo_k = $saldo->saldo_k-$kredit;
-			$hutang = '0';
+            $saldo_k = $saldo->saldo_k - $debit + $kredit;
+            $hutang = $debit + $kredit;
+        } else if ($status == 'PINJAMAN') {
+            $saldo_d = $saldo->saldo_d - $debit;
+            $saldo_k = $saldo->saldo_k;
+            $hutang = $debit;
+        } else if ($status == 'LABA') {
+            $saldo_d = $saldo->saldo_d - $debit;
+            $saldo_k = $saldo->saldo_k;
+            $hutang = '0';
+        } else if ($status == 'PENAMBAHAN') {
+            $saldo_d = $saldo->saldo_d + $debit;
+            $saldo_k = $saldo->saldo_k + $kredit;
+            $hutang = '0';
+        } else if ($status == 'PENGURANGAN') {
+            $saldo_d = $saldo->saldo_d - $debit;
+            $saldo_k = $saldo->saldo_k - $kredit;
+            $hutang = '0';
         }
 
         $data = Transaksi::create([
@@ -150,16 +150,16 @@ class TransaksiController extends Controller
         $last_transaksi = DB::table('transaksi')->where('id', $request->id)->first();
 
         $saldo = Saldo::first();
-        
+
         //data baru
         $nama = $request->nama;
         $jenis = $request->jenis;
         $jenis2 = $request->jenis2;
         $tanggal = $request->tanggal;
         $s_baru = $request->status;
-        $d_baru = $request->debit;
-        $k_baru = $request->kredit;
-        $laba = $request->laba;
+        $d_baru = preg_replace('/[,]/', '', $request->debit);
+        $k_baru = preg_replace('/[,]/', '', $request->kredit);
+        $laba = preg_replace('/[,]/', '', $request->laba);
 
         //data lama
         $status = $last_transaksi->status;
@@ -168,236 +168,236 @@ class TransaksiController extends Controller
         $s_debit = $saldo->saldo_d;
         $s_kredit = $saldo->saldo_k;
 
-        if($s_baru == 'LUNAS(DEBIT)') {
-            if($status == 'LUNAS(DEBIT)') {
-                $saldo_d = $s_debit-$debit+$kredit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+        if ($s_baru == 'LUNAS(DEBIT)') {
+            if ($status == 'LUNAS(DEBIT)') {
+                $saldo_d = $s_debit - $debit + $kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'LUNAS(KREDIT)') {
+            } elseif ($status == 'LUNAS(KREDIT)') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'BELUM LUNAS') {
+            } elseif ($status == 'BELUM LUNAS') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = $debit+$kredit;
-            }elseif ($status == 'PINJAMAN') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'PINJAMAN') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = $debit;
-            }elseif ($status == 'LABA') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'LABA') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENAMBAHAN') {
-                $saldo_d = $s_debit-$debit;
-                $saldo_k = $s_kredit-$kredit;
+            } elseif ($status == 'PENAMBAHAN') {
+                $saldo_d = $s_debit - $debit;
+                $saldo_k = $s_kredit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENGURANGAN') {
-                $saldo_d = $s_debit+$debit;
-                $saldo_k = $s_kredit+$kredit;
+            } elseif ($status == 'PENGURANGAN') {
+                $saldo_d = $s_debit + $debit;
+                $saldo_k = $s_kredit + $kredit;
                 // $hutang = '0';
             }
-            $saldo_db = $saldo_d+$d_baru-$k_baru;
-            $saldo_kb = $saldo_k-$d_baru+$k_baru;
+            $saldo_db = $saldo_d + $d_baru - $k_baru;
+            $saldo_kb = $saldo_k - $d_baru + $k_baru;
             $hutang = '0';
-        }elseif ($s_baru == 'LUNAS(KREDIT)') {
-            if($status == 'LUNAS(DEBIT)') {
-                $saldo_d = $s_debit-$debit+$kredit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+        } elseif ($s_baru == 'LUNAS(KREDIT)') {
+            if ($status == 'LUNAS(DEBIT)') {
+                $saldo_d = $s_debit - $debit + $kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'LUNAS(KREDIT)') {
+            } elseif ($status == 'LUNAS(KREDIT)') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'BELUM LUNAS') {
+            } elseif ($status == 'BELUM LUNAS') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = $debit+$kredit;
-            }elseif ($status == 'PINJAMAN') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'PINJAMAN') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = $debit;
-            }elseif ($status == 'LABA') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'LABA') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENAMBAHAN') {
-                $saldo_d = $s_debit-$debit;
-                $saldo_k = $s_kredit-$kredit;
+            } elseif ($status == 'PENAMBAHAN') {
+                $saldo_d = $s_debit - $debit;
+                $saldo_k = $s_kredit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENGURANGAN') {
-                $saldo_d = $s_debit+$debit;
-                $saldo_k = $s_kredit+$kredit;
+            } elseif ($status == 'PENGURANGAN') {
+                $saldo_d = $s_debit + $debit;
+                $saldo_k = $s_kredit + $kredit;
                 // $hutang = '0';
             }
             $saldo_db = $saldo_d;
-            $saldo_kb = $saldo_k-$d_baru+$k_baru;
+            $saldo_kb = $saldo_k - $d_baru + $k_baru;
             $hutang = '0';
-        }elseif ($s_baru == 'BELUM LUNAS') {
-            if($status == 'LUNAS(DEBIT)') {
-                $saldo_d = $s_debit-$debit+$kredit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+        } elseif ($s_baru == 'BELUM LUNAS') {
+            if ($status == 'LUNAS(DEBIT)') {
+                $saldo_d = $s_debit - $debit + $kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'LUNAS(KREDIT)') {
+            } elseif ($status == 'LUNAS(KREDIT)') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'BELUM LUNAS') {
+            } elseif ($status == 'BELUM LUNAS') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = $debit+$kredit;
-            }elseif ($status == 'PINJAMAN') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'PINJAMAN') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = $debit;
-            }elseif ($status == 'LABA') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'LABA') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENAMBAHAN') {
-                $saldo_d = $s_debit-$debit;
-                $saldo_k = $s_kredit-$kredit;
+            } elseif ($status == 'PENAMBAHAN') {
+                $saldo_d = $s_debit - $debit;
+                $saldo_k = $s_kredit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENGURANGAN') {
-                $saldo_d = $s_debit+$debit;
-                $saldo_k = $s_kredit+$kredit;
+            } elseif ($status == 'PENGURANGAN') {
+                $saldo_d = $s_debit + $debit;
+                $saldo_k = $s_kredit + $kredit;
                 // $hutang = '0';
             }
             $saldo_db = $saldo_d;
-            $saldo_kb = $saldo_k-$d_baru+$k_baru;
-            $hutang = $d_baru+$k_baru;
-        }elseif ($s_baru == 'PINJAMAN') {
-            if($status == 'LUNAS(DEBIT)') {
-                $saldo_d = $s_debit-$debit+$kredit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+            $saldo_kb = $saldo_k - $d_baru + $k_baru;
+            $hutang = $d_baru + $k_baru;
+        } elseif ($s_baru == 'PINJAMAN') {
+            if ($status == 'LUNAS(DEBIT)') {
+                $saldo_d = $s_debit - $debit + $kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'LUNAS(KREDIT)') {
+            } elseif ($status == 'LUNAS(KREDIT)') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'BELUM LUNAS') {
+            } elseif ($status == 'BELUM LUNAS') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = $debit+$kredit;
-            }elseif ($status == 'PINJAMAN') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'PINJAMAN') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = $debit;
-            }elseif ($status == 'LABA') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'LABA') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENAMBAHAN') {
-                $saldo_d = $s_debit-$debit;
-                $saldo_k = $s_kredit-$kredit;
+            } elseif ($status == 'PENAMBAHAN') {
+                $saldo_d = $s_debit - $debit;
+                $saldo_k = $s_kredit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENGURANGAN') {
-                $saldo_d = $s_debit+$debit;
-                $saldo_k = $s_kredit+$kredit;
+            } elseif ($status == 'PENGURANGAN') {
+                $saldo_d = $s_debit + $debit;
+                $saldo_k = $s_kredit + $kredit;
                 // $hutang = '0';
             }
-            $saldo_db = $saldo_d-$d_baru;
+            $saldo_db = $saldo_d - $d_baru;
             $saldo_kb = $saldo_k;
             $hutang = $d_baru;
-        }elseif ($s_baru == 'LABA') {
-            if($status == 'LUNAS(DEBIT)') {
-                $saldo_d = $s_debit-$debit+$kredit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+        } elseif ($s_baru == 'LABA') {
+            if ($status == 'LUNAS(DEBIT)') {
+                $saldo_d = $s_debit - $debit + $kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'LUNAS(KREDIT)') {
+            } elseif ($status == 'LUNAS(KREDIT)') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'BELUM LUNAS') {
+            } elseif ($status == 'BELUM LUNAS') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = $debit+$kredit;
-            }elseif ($status == 'PINJAMAN') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'PINJAMAN') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = $debit;
-            }elseif ($status == 'LABA') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'LABA') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENAMBAHAN') {
-                $saldo_d = $s_debit-$debit;
-                $saldo_k = $s_kredit-$kredit;
+            } elseif ($status == 'PENAMBAHAN') {
+                $saldo_d = $s_debit - $debit;
+                $saldo_k = $s_kredit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENGURANGAN') {
-                $saldo_d = $s_debit+$debit;
-                $saldo_k = $s_kredit+$kredit;
+            } elseif ($status == 'PENGURANGAN') {
+                $saldo_d = $s_debit + $debit;
+                $saldo_k = $s_kredit + $kredit;
                 // $hutang = '0';
             }
-            $saldo_db = $saldo_d-$d_baru;
+            $saldo_db = $saldo_d - $d_baru;
             $saldo_kb = $saldo_k;
             $hutang = '0';
-        }elseif ($s_baru == 'PENAMBAHAN') {
-            if($status == 'LUNAS(DEBIT)') {
-                $saldo_d = $s_debit-$debit+$kredit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+        } elseif ($s_baru == 'PENAMBAHAN') {
+            if ($status == 'LUNAS(DEBIT)') {
+                $saldo_d = $s_debit - $debit + $kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'LUNAS(KREDIT)') {
+            } elseif ($status == 'LUNAS(KREDIT)') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'BELUM LUNAS') {
+            } elseif ($status == 'BELUM LUNAS') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = $debit+$kredit;
-            }elseif ($status == 'PINJAMAN') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'PINJAMAN') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = $debit;
-            }elseif ($status == 'LABA') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'LABA') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENAMBAHAN') {
-                $saldo_d = $s_debit-$debit;
-                $saldo_k = $s_kredit-$kredit;
+            } elseif ($status == 'PENAMBAHAN') {
+                $saldo_d = $s_debit - $debit;
+                $saldo_k = $s_kredit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENGURANGAN') {
-                $saldo_d = $s_debit+$debit;
-                $saldo_k = $s_kredit+$kredit;
+            } elseif ($status == 'PENGURANGAN') {
+                $saldo_d = $s_debit + $debit;
+                $saldo_k = $s_kredit + $kredit;
                 // $hutang = '0';
             }
-            $saldo_db = $saldo_d+$d_baru;
-            $saldo_kb = $saldo_k+$k_baru;
+            $saldo_db = $saldo_d + $d_baru;
+            $saldo_kb = $saldo_k + $k_baru;
             $hutang = '0';
-        }elseif ($s_baru == 'PENGURANGAN') {
-            if($status == 'LUNAS(DEBIT)') {
-                $saldo_d = $s_debit-$debit+$kredit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+        } elseif ($s_baru == 'PENGURANGAN') {
+            if ($status == 'LUNAS(DEBIT)') {
+                $saldo_d = $s_debit - $debit + $kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'LUNAS(KREDIT)') {
+            } elseif ($status == 'LUNAS(KREDIT)') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'BELUM LUNAS') {
+            } elseif ($status == 'BELUM LUNAS') {
                 $saldo_d = $s_debit;
-                $saldo_k = $s_kredit+$debit-$kredit;
+                $saldo_k = $s_kredit + $debit - $kredit;
                 // $hutang = $debit+$kredit;
-            }elseif ($status == 'PINJAMAN') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'PINJAMAN') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = $debit;
-            }elseif ($status == 'LABA') {
-                $saldo_d = $s_debit+$debit;
+            } elseif ($status == 'LABA') {
+                $saldo_d = $s_debit + $debit;
                 $saldo_k = $s_kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENAMBAHAN') {
-                $saldo_d = $s_debit-$debit;
-                $saldo_k = $s_kredit-$kredit;
+            } elseif ($status == 'PENAMBAHAN') {
+                $saldo_d = $s_debit - $debit;
+                $saldo_k = $s_kredit - $kredit;
                 // $hutang = '0';
-            }elseif ($status == 'PENGURANGAN') {
-                $saldo_d = $s_debit+$debit;
-                $saldo_k = $s_kredit+$kredit;
+            } elseif ($status == 'PENGURANGAN') {
+                $saldo_d = $s_debit + $debit;
+                $saldo_k = $s_kredit + $kredit;
                 // $hutang = '0';
             }
-            $saldo_db = $saldo_d-$d_baru;
-            $saldo_kb = $saldo_k-$k_baru;
+            $saldo_db = $saldo_d - $d_baru;
+            $saldo_kb = $saldo_k - $k_baru;
             $hutang = '0';
         }
 
@@ -413,7 +413,7 @@ class TransaksiController extends Controller
             'hutang' => $hutang,
         ];
 
-        
+
         $data2 = [
             'saldo_d' => $saldo_db,
             'saldo_k' => $saldo_kb,
@@ -424,9 +424,6 @@ class TransaksiController extends Controller
 
 
         echo json_encode($data2);
-        
-
-
     }
 
     /**
@@ -446,41 +443,41 @@ class TransaksiController extends Controller
         $saldo_k = $saldo->saldo_k;
 
         //mengembalikan saldo ke semula
-	    if($status == 'LUNAS(DEBIT)') {
-	    	$sd_semula = $saldo_d-$debit+$kredit;
-	    	$sk_semula = $saldo_k+$debit-$kredit;
-	    	// $hutang = '0';
-	    }elseif ($status == 'LUNAS(KREDIT)') {
-	    	$sd_semula = $saldo_d;
-	    	$sk_semula = $saldo_k+$debit-$kredit;
-	    	// $hutang = '0';
-	    }elseif ($status == 'BELUM LUNAS') {
-	    	$sd_semula = $saldo_d;
-	    	$sk_semula = $saldo_k+$debit-$kredit;
-	    	// $hutang = $debit+$kredit;
-	    }elseif ($status == 'PINJAMAN') {
-	    	$sd_semula = $saldo_d+$debit;
-	    	$sk_semula = $saldo_k;
-	    	// $hutang = $debit;
-	    }elseif ($status == 'LABA') {
-	    	$sd_semula = $saldo_d+$debit;
-	    	$sk_semula = $saldo_k;
-	    	// $hutang = '0';
-	    }elseif ($status == 'PENAMBAHAN') {
-	    	$sd_semula = $saldo_d-$debit;
-	    	$sk_semula = $saldo_k-$kredit;
-	    	// $hutang = '0';
-	    }elseif ($status == 'PENGURANGAN') {
-	    	$sd_semula = $saldo_d+$debit;
-	    	$sk_semula = $saldo_k+$kredit;
-	    	// $hutang = '0';
-	    }
+        if ($status == 'LUNAS(DEBIT)') {
+            $sd_semula = $saldo_d - $debit + $kredit;
+            $sk_semula = $saldo_k + $debit - $kredit;
+            // $hutang = '0';
+        } elseif ($status == 'LUNAS(KREDIT)') {
+            $sd_semula = $saldo_d;
+            $sk_semula = $saldo_k + $debit - $kredit;
+            // $hutang = '0';
+        } elseif ($status == 'BELUM LUNAS') {
+            $sd_semula = $saldo_d;
+            $sk_semula = $saldo_k + $debit - $kredit;
+            // $hutang = $debit+$kredit;
+        } elseif ($status == 'PINJAMAN') {
+            $sd_semula = $saldo_d + $debit;
+            $sk_semula = $saldo_k;
+            // $hutang = $debit;
+        } elseif ($status == 'LABA') {
+            $sd_semula = $saldo_d + $debit;
+            $sk_semula = $saldo_k;
+            // $hutang = '0';
+        } elseif ($status == 'PENAMBAHAN') {
+            $sd_semula = $saldo_d - $debit;
+            $sk_semula = $saldo_k - $kredit;
+            // $hutang = '0';
+        } elseif ($status == 'PENGURANGAN') {
+            $sd_semula = $saldo_d + $debit;
+            $sk_semula = $saldo_k + $kredit;
+            // $hutang = '0';
+        }
 
         $data = [
             'saldo_d' => $sd_semula,
             'saldo_k' => $sk_semula,
         ];
-        Saldo::where('id',$saldo->id)->update($data);
+        Saldo::where('id', $saldo->id)->update($data);
 
         $data2 =  Transaksi::where('id', $request->id)->delete();
         echo json_encode($data2);
@@ -493,22 +490,22 @@ class TransaksiController extends Controller
         if ($request->ajax()) {
             $query = Transaksi::select('*');
             $data = $query->get();
-            
-            foreach( $data as $row ) {
+
+            foreach ($data as $row) {
                 $row->nama_t = strtoupper($row->nama);
-                $row->debit_t = "Rp " . number_format($row->debit,0,',','.');
-                $row->kredit_t = "Rp " . number_format($row->kredit,0,',','.');
+                $row->debit_t = "Rp " . number_format($row->debit, 0, ',', '.');
+                $row->kredit_t = "Rp " . number_format($row->kredit, 0, ',', '.');
                 $row->jenis_t = strtoupper($row->jenis);
                 $row->tanggal_t = date('d F Y', strtotime($row->tanggal));
             };
-    
-            return Datatables::of($data)->addColumn('action', function($row){
-                $actionBtn = 
-                '<button class="btn btn-warning btn-sm edit-button" data-id="'.$row->id.'"><i class="fas fa-exclamation-triangle"></i></button> 
+
+            return Datatables::of($data)->addColumn('action', function ($row) {
+                $actionBtn =
+                    '<button class="btn btn-warning btn-sm edit-button" data-id="' . $row->id . '"><i class="fas fa-exclamation-triangle"></i></button> 
                 <form onSubmit="JavaScript:submitHandler()" action="javascript:void(0)" class="d-inline form-delete">
-                    <input type="hidden" name="_token" value="'.csrf_token().'" />
-                    <input type="hidden" name="id" value="'.$row->id.'" />
-                    <button type="button" class="btn btn-danger btn-sm delete-button" data-token="'.csrf_token().'" data-id="'.$row->id.'" id="deleteBtn"><i class="fas fa-trash"></i></button>
+                    <input type="hidden" name="_token" value="' . csrf_token() . '" />
+                    <input type="hidden" name="id" value="' . $row->id . '" />
+                    <button type="button" class="btn btn-danger btn-sm delete-button" data-token="' . csrf_token() . '" data-id="' . $row->id . '" id="deleteBtn"><i class="fas fa-trash"></i></button>
                 </form>';
                 return $actionBtn;
             })->make(true);
@@ -520,7 +517,7 @@ class TransaksiController extends Controller
     public function updateModal(Request $request, Transaksi $transaksi)
     {
         $data = $transaksi->select('*')
-        ->where('id', $request->id)->first();
+            ->where('id', $request->id)->first();
 
         echo json_encode($data);
     }
@@ -534,7 +531,7 @@ class TransaksiController extends Controller
     }
     public function autofill_status(Request $request)
     {
-        if($request->status == 'LUNAS(DEBIT)' || $request->status == 'BELUM LUNAS'){
+        if ($request->status == 'LUNAS(DEBIT)' || $request->status == 'BELUM LUNAS') {
             $jenis = DB::table('jenis_transaksi')->where('jenis_transaksi', $request->jenis)->first();
         } else {
             $jenis = [

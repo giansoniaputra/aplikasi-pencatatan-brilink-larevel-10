@@ -2,8 +2,7 @@
 @section('container')
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <button type="button" class="btn btn-primary btn-icon-split" id="tombol-input" data-toggle="modal"
-            data-target="#modal-form">
+        <button type="button" class="btn btn-primary btn-icon-split" id="tombol-input" data-toggle="modal" data-target="#modal-form">
             <span class="icon text-white-50">
                 <i class="fas fa-flag"></i>
             </span>
@@ -33,8 +32,7 @@
 </div>
 
 {{-- Modal --}}
-<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-    aria-hidden="true" id="modal-form">
+<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" id="modal-form">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -56,13 +54,12 @@
                     </div>
                     <div class="mb-3">
                         <label for="position" class="form-label">Jenis Transaksi</label>
-                        <select class="form-control" data-toggle="select2" data-width="100%" name="jenis" id="jenis"
-                            onchange="autofill()">
+                        <select class="form-control" data-toggle="select2" data-width="100%" name="jenis" id="jenis" onchange="autofill()">
                             <option value="">Pilih Jenis Transaksi</option>
                             @foreach( $jeniss as $row )
-                                <option value="{{ $row->jenis_transaksi }}">
-                                    {{ $row->jenis_transaksi }}
-                                </option>
+                            <option value="{{ $row->jenis_transaksi }}">
+                                {{ $row->jenis_transaksi }}
+                            </option>
                             @endforeach
                         </select>
                         <div class="invalid-feedback">
@@ -89,8 +86,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="position" class="form-label">Status</label>
-                        <select class="form-control" data-toggle="select2" data-width="100%" name="status" id="status"
-                            onchange="autofill_2()">
+                        <select class="form-control" data-toggle="select2" data-width="100%" name="status" id="status" onchange="autofill_2()">
                             <option value="">Pilih Status Transaksi</option>
                             <option value="LUNAS(DEBIT)">LUNAS(DEBIT)</option>
                             <option value="LUNAS(KREDIT)">LUNAS(KREDIT)</option>
@@ -106,21 +102,21 @@
                     </div>
                     <div class="mb-3">
                         <label for="example-date" class="form-label">Debit</label>
-                        <input class="form-control" id="debit" type="number" name="debit" value="0">
+                        <input class="form-control money" id="debit" type="text" name="debit" value="0">
                         <div class="invalid-feedback">
                             <strong>Error: </strong><span id="error-debit"></span>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="example-date" class="form-label">Kredit</label>
-                        <input class="form-control" id="kredit" type="number" name="kredit" value="0">
+                        <input class="form-control money" id="kredit" type="text" name="kredit" value="0">
                         <div class="invalid-feedback">
                             <strong>Error: </strong><span id="error-kredit"></span>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="example-date" class="form-label">Laba</label>
-                        <input class="form-control" id="laba" type="number" name="laba">
+                        <input class="form-control money" id="laba" type="text" name="laba">
                         <div class="invalid-feedback">
                             <strong>Error: </strong><span id="error-laba"></span>
                         </div>
@@ -137,50 +133,78 @@
         </div>
     </div>
 </div>
-
-
+{{-- Simple Money Format --}}
+<script src="/js/simple.money.format.js"></script>
+<script src="/js/simple.money.format.init.js"></script>
+{{-- !Simple Money Format --}}
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
+        $("#debit").on('keyup', function() {
+            $("input.money").simpleMoneyFormat({
+                currencySymbol: "Rp"
+                , decimalPlaces: 0
+                , thousandsSeparator: "."
+            , });
+        })
+        $("#kredit").on('keyup', function() {
+            $("input.money").simpleMoneyFormat({
+                currencySymbol: "Rp"
+                , decimalPlaces: 0
+                , thousandsSeparator: "."
+            , });
+        })
+        $("#laba").on('keyup', function() {
+            $("input.money").simpleMoneyFormat({
+                currencySymbol: "Rp"
+                , decimalPlaces: 0
+                , thousandsSeparator: "."
+            , });
+        })
+    })
+
+</script>
+<script>
+    $(document).ready(function() {
         //Inialisasi Datatables
         let table = $('#dataTable').DataTable({
-            "processing": true,
-            "responsive": true,
-            "searching": true,
-            "bLengthChange": true,
-            "info": false,
-            "ordering": true,
-            "serverSide": true,
-            "ajax": "{{ route('transaksi.dataTables') }}",
-            "columns": [{
-                    render: function (data, type, row, meta) {
+            "processing": true
+            , "responsive": true
+            , "searching": true
+            , "bLengthChange": true
+            , "info": false
+            , "ordering": true
+            , "serverSide": true
+            , "ajax": "{{ route('transaksi.dataTables') }}"
+            , "columns": [{
+                    render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
-                    },
-                },
-                {
+                    }
+                , }
+                , {
                     "data": 'nama_t'
-                },
-                {
+                }
+                , {
                     "data": 'jenis_t'
-                },
-                {
+                }
+                , {
                     "data": 'tanggal_t'
-                },
-                {
+                }
+                , {
                     "data": 'status'
-                },
-                {
+                }
+                , {
                     "data": 'debit_t'
-                },
-                {
+                }
+                , {
                     "data": 'kredit_t'
-                },
-                {
-                    "data": 'action',
-                    "orderable": true,
-                    "searchable": true
-                },
-            ],
-            "order": [
+                }
+                , {
+                    "data": 'action'
+                    , "orderable": true
+                    , "searchable": true
+                }
+            , ]
+            , "order": [
                 [0, 'desc']
             ]
 
@@ -197,7 +221,7 @@
         let laba = $("#laba")
 
         //Apabila Tomboh Tambah Data di Click
-        $("#tombol-input").on('click', function () {
+        $("#tombol-input").on('click', function() {
             $(".saveAction").removeClass('d-none')
             $(".editAction").addClass('d-none')
             nama.val('');
@@ -212,7 +236,7 @@
         })
 
         //Apabila tombol x di modal di tekan
-        $("#close").on('click', function () {
+        $("#close").on('click', function() {
             nama.val('');
             jenis.val('');
             jenis2.val('');
@@ -225,7 +249,7 @@
         })
 
         //Apabila tombol close pada modal di tekan
-        $("#batal").on('click', function () {
+        $("#batal").on('click', function() {
             nama.val('');
             jenis.val('');
             jenis2.val('');
@@ -238,29 +262,29 @@
         })
 
         //Action Tambah Data
-        $('#saveBtn').on('click', function (e) {
+        $('#saveBtn').on('click', function(e) {
             var formdata = $("#modal-form form").serializeArray();
             var data = {};
-            $(formdata).each(function (index, obj) {
+            $(formdata).each(function(index, obj) {
                 data[obj.name] = obj.value;
             });
             $.ajax({
-                data: $('#modal-form form').serialize(),
-                url: "/transaksi",
-                type: "POST",
-                dataType: 'json',
-                success: function (data) {
+                data: $('#modal-form form').serialize()
+                , url: "/transaksi"
+                , type: "POST"
+                , dataType: 'json'
+                , success: function(data) {
                     $('#modal-form').modal('hide');
                     table.ajax.reload()
                     Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Data Berhasil Ditambahkan',
-                        showConfirmButton: false,
-                        timer: 1500
+                        position: 'top-end'
+                        , icon: 'success'
+                        , title: 'Data Berhasil Ditambahkan'
+                        , showConfirmButton: false
+                        , timer: 1500
                     })
-                },
-                error: function (data) {
+                }
+                , error: function(data) {
                     let error = data.responseJSON.errors
                     let nama = $("#nama")
                     let jenis = $("#jenis")
@@ -317,34 +341,39 @@
         });
 
         //Mengembalikan form ke semula apabila terjadi validasi
-        nama.on('click', function () {
+        nama.on('click', function() {
             nama.removeClass('is-invalid')
         })
-        jenis.on('click', function () {
+        jenis.on('click', function() {
             jenis.removeClass('is-invalid')
         })
-        jenis2.on('click', function () {
+        jenis2.on('click', function() {
             jenis2.removeClass('is-invalid')
         })
-        tanggal.on('click', function () {
+        tanggal.on('click', function() {
             tanggal.removeClass('is-invalid')
         })
-        status.on('click', function () {
+        status.on('click', function() {
             status.removeClass('is-invalid')
         })
-        debit.on('click', function () {
+        debit.on('click', function() {
             debit.removeClass('is-invalid')
         })
-        kredit.on('click', function () {
+        kredit.on('click', function() {
             kredit.removeClass('is-invalid')
         })
-        laba.on('click', function () {
+        laba.on('click', function() {
             laba.removeClass('is-invalid')
         })
 
         //ACTION UPDATE DATA
         //Memanggil data yang di click
-        $('#dataTable').on('click', '.edit-button', function () {
+        $('#dataTable').on('click', '.edit-button', function() {
+            $("input.money").simpleMoneyFormat({
+                currencySymbol: "Rp"
+                , decimalPlaces: 0
+                , thousandsSeparator: "."
+            , });
             let modal = $("#modal-form")
             let id = $(this).attr('data-id');
             let title = $("#staticBackdropLabel")
@@ -364,11 +393,11 @@
             $.ajax({
                 data: {
                     id: id
-                },
-                url: "{{ route('edit-transaksi') }}",
-                type: "GET",
-                dataType: 'json',
-                success: function (data) {
+                }
+                , url: "{{ route('edit-transaksi') }}"
+                , type: "GET"
+                , dataType: 'json'
+                , success: function(data) {
                     $(".id-last").html('<input type="hidden" name="id" value="' + data.id +
                         '">')
                     nama.val(data.nama)
@@ -384,31 +413,31 @@
         });
 
         //Ketik button update di tekan
-        $('#editBtn').on('click', function (e) {
+        $('#editBtn').on('click', function(e) {
 
             var formdata = $("#modal-form form").serializeArray();
             var data = {};
-            $(formdata).each(function (index, obj) {
+            $(formdata).each(function(index, obj) {
                 data[obj.name] = obj.value;
             });
             $.ajax({
-                data: $('#modal-form form').serialize(),
-                url: "{{ route('update-transaksi') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function (data) {
+                data: $('#modal-form form').serialize()
+                , url: "{{ route('update-transaksi') }}"
+                , type: "POST"
+                , dataType: 'json'
+                , success: function(data) {
                     console.log(data);
                     $('#modal-form').modal('hide');
                     table.ajax.reload()
                     Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Data Berhasil Diedit',
-                        showConfirmButton: false,
-                        timer: 1500
+                        position: 'top-end'
+                        , icon: 'success'
+                        , title: 'Data Berhasil Diedit'
+                        , showConfirmButton: false
+                        , timer: 1500
                     })
-                },
-                error: function (data) {
+                }
+                , error: function(data) {
                     let error = data.responseJSON.errors
                     let nama = $("#nama")
                     let jenis = $("#jenis")
@@ -465,34 +494,34 @@
         });
 
         //Menghapus data transaksi
-        $('#dataTable').on('click', '.delete-button', function () {
+        $('#dataTable').on('click', '.delete-button', function() {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                title: 'Are you sure?'
+                , text: "You won't be able to revert this!"
+                , icon: 'warning'
+                , showCancelButton: true
+                , confirmButtonColor: '#3085d6'
+                , cancelButtonColor: '#d33'
+                , confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     let token = $(this).attr('data-token');
                     let id = $(this).attr('data-id');
                     $.ajax({
                         data: {
-                            id: id,
-                            _token: token
-                        },
-                        url: "{{ route('hapus-transaksi') }}",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function (data) {
+                            id: id
+                            , _token: token
+                        }
+                        , url: "{{ route('hapus-transaksi') }}"
+                        , type: "POST"
+                        , dataType: 'json'
+                        , success: function(data) {
                             // console.log(data)
                             table.ajax.reload()
                             Swal.fire(
-                                'Deleted!',
-                                'Your file has been deleted.',
-                                'success'
+                                'Deleted!'
+                                , 'Your file has been deleted.'
+                                , 'success'
                             )
                         }
                     })
@@ -512,14 +541,14 @@
         $.ajax({
             data: {
                 jenis: jenis
-            },
-            url: "{{ route('change-jenis') }}",
-            type: "GET",
-            dataType: 'json',
-            success: function (data) {
+            }
+            , url: "{{ route('change-jenis') }}"
+            , type: "GET"
+            , dataType: 'json'
+            , success: function(data) {
                 $("#laba").val(data.laba);
-            },
-        })
+            }
+        , })
     }
 
     function autofill_2() {
@@ -529,16 +558,16 @@
 
         $.ajax({
             data: {
-                status: status,
-                jenis: jenis
-            },
-            url: "{{ route('change-status') }}",
-            type: "GET",
-            dataType: 'json',
-            success: function (data) {
+                status: status
+                , jenis: jenis
+            }
+            , url: "{{ route('change-status') }}"
+            , type: "GET"
+            , dataType: 'json'
+            , success: function(data) {
                 $("#laba").val(data.laba);
-            },
-        })
+            }
+        , })
     }
 
 </script>
