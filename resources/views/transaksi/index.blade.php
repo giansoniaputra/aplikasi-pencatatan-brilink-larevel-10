@@ -19,8 +19,12 @@
             <div class="col-sm-3">
                 <input type="date" id="tanggal-akhir" value="{{ $tanggal_akhir }}" class="form-control">
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-6">
                 <button class="btn btn-secondary" id="search-tanggal">Cari</button>
+                <button class="btn btn-secondary" id="search-today">Today</button>
+                <button class="btn btn-secondary" id="search-1">-1</button>
+                <button class="btn btn-secondary" id="search-2">-2</button>
+                <button class="btn btn-secondary" id="search-3">-3</button>
             </div>
         </div>
     </div>
@@ -231,8 +235,41 @@
             ]
 
         });
-
+        let tanggal_awal = $("#tanggal-awal");
+        let tanggal_akhir = $("#tanggal-akhir");
         $("#search-tanggal").on("click", function() {
+            table.ajax.reload();
+        })
+        $("#search-today").on("click", function() {
+            let selectedDate = new Date();
+            selectedDate.setDate(selectedDate.getDate());
+            let formattedDate = selectedDate.toISOString().slice(0, 10);
+            tanggal_awal.val(formattedDate);
+            tanggal_akhir.val(formattedDate);
+            table.ajax.reload();
+        })
+        $("#search-1").on("click", function() {
+            let selectedDate = new Date(tanggal_awal.val());
+            selectedDate.setDate(selectedDate.getDate() - 1);
+            let formattedDate = selectedDate.toISOString().slice(0, 10);
+            tanggal_awal.val(formattedDate);
+            tanggal_akhir.val(formattedDate);
+            table.ajax.reload();
+        })
+        $("#search-2").on("click", function() {
+            let selectedDate = new Date(tanggal_awal.val());
+            selectedDate.setDate(selectedDate.getDate() - 2);
+            let formattedDate = selectedDate.toISOString().slice(0, 10);
+            tanggal_awal.val(formattedDate);
+            tanggal_akhir.val(formattedDate);
+            table.ajax.reload();
+        })
+        $("#search-3").on("click", function() {
+            let selectedDate = new Date(tanggal_awal.val());
+            selectedDate.setDate(selectedDate.getDate() - 3);
+            let formattedDate = selectedDate.toISOString().slice(0, 10);
+            tanggal_awal.val(formattedDate);
+            tanggal_akhir.val(formattedDate);
             table.ajax.reload();
         })
 
