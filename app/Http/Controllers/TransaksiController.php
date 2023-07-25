@@ -7,6 +7,7 @@ use App\Models\Saldo;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\JenisTransaksi;
+use Illuminate\Support\Carbon;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +24,8 @@ class TransaksiController extends Controller
             'modal' => Modal::first(),
             'jeniss' => DB::table('jenis_transaksi')->orderBy('jenis_transaksi', 'asc')->get(),
             'transaksis' => Transaksi::all(),
+            'tanggal_awal' => Carbon::now()->startOfMonth()->toDateString(),
+            'tanggal_akhir' => Carbon::now()->endOfMonth()->toDateString(),
         ];
 
         return view('transaksi.index', $data);
@@ -488,8 +491,9 @@ class TransaksiController extends Controller
     public function dataTables(Request $request)
     {
         if ($request->ajax()) {
-            $query = Transaksi::select('*');
-            $data = $query->get();
+            $data = Transaksi::where("tanggal", ">=", $request->tanggal_awal)
+                ->where("tanggal", "<=", $request->tanggal_akhir)
+                ->get();
 
             foreach ($data as $row) {
                 $row->nama_t = strtoupper($row->nama);

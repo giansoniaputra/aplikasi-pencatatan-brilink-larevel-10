@@ -1,13 +1,28 @@
 @extends('layouts.main')
 @section('container')
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
+<div class="row my-3">
+    <div class="col">
         <button type="button" class="btn btn-primary btn-icon-split" id="tombol-input" data-toggle="modal" data-target="#modal-form">
             <span class="icon text-white-50">
                 <i class="fas fa-flag"></i>
             </span>
             <span class="text">Input Transaksi</span>
         </button>
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <div class="row">
+            <div class="col-sm-3">
+                <input type="date" id="tanggal-awal" value="{{ $tanggal_awal }}" class="form-control">
+            </div>
+            <div class="col-sm-3">
+                <input type="date" id="tanggal-akhir" value="{{ $tanggal_akhir }}" class="form-control">
+            </div>
+            <div class="col-sm-3">
+                <button class="btn btn-secondary" id="search-tanggal">Cari</button>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -167,14 +182,21 @@
     $(document).ready(function() {
         //Inialisasi Datatables
         let table = $('#dataTable').DataTable({
-            "processing": true
-            , "responsive": true
-            , "searching": true
-            , "bLengthChange": true
-            , "info": false
-            , "ordering": true
-            , "serverSide": true
-            , "ajax": "{{ route('transaksi.dataTables') }}"
+            processing: true
+            , responsive: true
+            , searching: true
+            , bLengthChange: true
+            , info: false
+            , ordering: true
+            , serverSide: true
+            , ajax: {
+                url: "{{ route('transaksi.dataTables') }}"
+                , type: "GET"
+                , data: function(d) {
+                    d.tanggal_awal = $("#tanggal-awal").val();
+                    d.tanggal_akhir = $("#tanggal-akhir").val();
+                }
+            , }
             , "columns": [{
                     render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
@@ -209,6 +231,10 @@
             ]
 
         });
+
+        $("#search-tanggal").on("click", function() {
+            table.ajax.reload();
+        })
 
         //Declarasi Tiap Form
         let nama = $("#nama")
