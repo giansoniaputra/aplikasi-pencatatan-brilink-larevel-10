@@ -253,7 +253,7 @@
             nama.val('');
             jenis.val('');
             jenis2.val('');
-            tanggal.val('');
+            tanggal.val($("#tanggal-awal").val());
             status.val('');
             debit.val('0');
             kredit.val('0');
