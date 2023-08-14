@@ -160,14 +160,14 @@
     let angka = document.querySelector('#debit')
     angka.addEventListener('keyup', function() {
         let trim = angka.value.trim()
-        if (trim.charAt(0) == 0) {
+        if (trim.charAt(0) == 0 && trim.charAt(1) == true) {
             angka.value = trim.charAt(1)
         }
     })
     let angka2 = document.querySelector('#kredit')
     angka2.addEventListener('keyup', function() {
         let trim = angka2.value.trim()
-        if (trim.charAt(0) == 0) {
+        if (trim.charAt(0) == 0 && trim.charAt(1) == true) {
             angka2.value = trim.charAt(1)
         }
     })
