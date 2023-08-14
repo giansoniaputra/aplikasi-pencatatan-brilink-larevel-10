@@ -157,6 +157,20 @@
 <script src="/js/simple.money.format.init.js"></script>
 {{-- !Simple Money Format --}}
 <script>
+    let angka = document.querySelector('#debit')
+    angka.addEventListener('keyup', function() {
+        let trim = angka.value.trim()
+        if (trim.charAt(0) == 0) {
+            angka.value = trim.charAt(1)
+        }
+    })
+    let angka2 = document.querySelector('#kredit')
+    angka2.addEventListener('keyup', function() {
+        let trim = angka2.value.trim()
+        if (trim.charAt(0) == 0) {
+            angka2.value = trim.charAt(1)
+        }
+    })
     $(document).ready(function() {
         $("#debit").on('keyup', function() {
             $("input.money").simpleMoneyFormat({
