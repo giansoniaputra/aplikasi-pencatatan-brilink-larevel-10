@@ -293,7 +293,7 @@
             $(".editAction").addClass('d-none')
             nama.val('');
             jenis.val('');
-            jenis2.val('');
+            jenis2.val('bri');
             tanggal.val($("#tanggal-awal").val());
             status.val('');
             debit.val('0');
@@ -306,7 +306,7 @@
         $("#close").on('click', function() {
             nama.val('');
             jenis.val('');
-            jenis2.val('');
+
             tanggal.val('');
             status.val('');
             debit.val('0');
@@ -319,7 +319,7 @@
         $("#batal").on('click', function() {
             nama.val('');
             jenis.val('');
-            jenis2.val('');
+
             tanggal.val('');
             status.val('');
             debit.val('0');

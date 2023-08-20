@@ -111,14 +111,16 @@ class TransaksiController extends Controller
 
         $data->save();
 
-        if (auth()->user()->role = "MEMBER") {
+        if (auth()->user()->role == "MEMBER") {
             $cek = FeeMember::where('member', auth()->user()->id)->first();
             if (!$cek) {
                 $data2 = [
                     'member' => auth()->user()->id
                 ];
-                if ($status == 'LUNAS(DEBIT)') {
+                if ($laba > 0) {
                     $data2['jumlah_fee'] = $laba * (20 / 100);
+                } else {
+                    $data2['jumlah_fee'] = 500;
                 }
                 FeeMember::create($data2);
             } else {
@@ -441,7 +443,7 @@ class TransaksiController extends Controller
             'saldo_k' => $saldo_kb,
         ];
 
-        if (auth()->user()->role = "MEMBER") {
+        if (auth()->user()->role == "MEMBER") {
             $cek = FeeMember::where('member', auth()->user()->id)->first();
             $laba_lama = $last_transaksi->laba;
             if ($laba > 0) {
