@@ -88,8 +88,7 @@
                     <div class="mb-3">
                         <label for="jenis2" class="form-label">BRI/NON-BRI</label>
                         <select class="form-control" data-toggle="select2" data-width="100%" name="jenis2" id="jenis2">
-                            <option value="">...</option>
-                            <option value="bri">BRILINK</option>
+                            <option value="bri" selected>BRILINK</option>
                             <option value="non">NON-BRILINK</option>
                         </select>
                         <div class="invalid-feedback">
