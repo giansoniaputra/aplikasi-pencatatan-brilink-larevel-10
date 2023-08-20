@@ -135,7 +135,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="example-date" class="form-label">Laba</label>
-                        <input class="form-control money" id="laba" type="text" name="laba">
+                        <input class="form-control money" id="laba" type="text" name="laba" @if (auth()->user()->role == "MEMBER") readonly @endif>
                         <div class="invalid-feedback">
                             <strong>Error: </strong><span id="error-laba"></span>
                         </div>

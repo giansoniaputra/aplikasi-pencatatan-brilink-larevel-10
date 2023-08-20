@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Modal;
 use App\Models\Saldo;
+use App\Models\FeeMember;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\JenisTransaksi;
@@ -110,6 +111,24 @@ class TransaksiController extends Controller
 
         $data->save();
 
+        if (auth()->user()->role = "MEMBER") {
+            $cek = FeeMember::where('member', auth()->user()->id)->first();
+            if (!$cek) {
+                $data2 = [
+                    'member' => auth()->user()->id
+                ];
+                if ($status == 'LUNAS(DEBIT)') {
+                    $data2['jumlah_fee'] = $laba * (20 / 100);
+                }
+                FeeMember::create($data2);
+            } else {
+                if ($laba > 0) {
+                    FeeMember::where('member', auth()->user()->id)->update(['jumlah_fee' => $cek->jumlah_fee + ($laba * (20 / 100))]);
+                } else {
+                    FeeMember::where('member', auth()->user()->id)->update(['jumlah_fee' => $cek->jumlah_fee + 500]);
+                }
+            }
+        }
         Saldo::where('id', $saldo->id)->update([
             'saldo_d' => $saldo_d,
             'saldo_k' => $saldo_k,
@@ -422,6 +441,16 @@ class TransaksiController extends Controller
             'saldo_k' => $saldo_kb,
         ];
 
+        if (auth()->user()->role = "MEMBER") {
+            $cek = FeeMember::where('member', auth()->user()->id)->first();
+            $laba_lama = $last_transaksi->laba;
+            if ($laba > 0) {
+                if ($laba_lama > 0) {
+                    FeeMember::where('member', auth()->user()->id)->update(['jumlah_fee' => $cek->jumlah_fee - ($laba_lama * (20 / 100))  + ($laba * (20 / 100))]);
+                }
+            }
+        }
+
         Transaksi::where('id', $request->id)->update($data);
         Saldo::where('id', $saldo->id)->update($data2);
 
@@ -543,5 +572,11 @@ class TransaksiController extends Controller
             ];
         }
         echo json_encode($jenis);
+    }
+
+    public function clear_fee($member)
+    {
+        FeeMember::where('id', $member)->update(['jumlah_fee' => 0]);
+        return redirect()->back();
     }
 }

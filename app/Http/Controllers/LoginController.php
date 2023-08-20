@@ -16,7 +16,7 @@ class LoginController extends Controller
             'user' => User::all()
         ];
 
-        return view('auth.login',$data);
+        return view('auth.login', $data);
     }
 
     public function authenticate(Request $request)
@@ -41,6 +41,15 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/auth');
+    }
 
+    public function register()
+    {
+        $data = [
+            'title' => 'User | Gian Cellular',
+            'user' => User::all()
+        ];
+
+        return view('auth.register');
     }
 }
