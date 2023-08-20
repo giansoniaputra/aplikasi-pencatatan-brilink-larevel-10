@@ -85,7 +85,7 @@
                             <strong>Error: </strong><span id="error-jenis"></span>
                         </div>
                     </div>
-                    <input type="hidden" name="jenis2" id="jenis2">
+                    <input type="hidden" name="jenis2" id="jenis2" value="bri">
                     <div class="mb-3">
                         <label for="example-date" class="form-label">Tanggal Transaksi</label>
                         <input class="form-control" type="date" name="tanggal" id="tanggal">
