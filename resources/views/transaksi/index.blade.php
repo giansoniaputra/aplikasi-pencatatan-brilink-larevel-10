@@ -330,6 +330,7 @@
 
         //Action Tambah Data
         $('#saveBtn').on('click', function(e) {
+            $(this).attr('disabled', 'true');
             var formdata = $("#modal-form form").serializeArray();
             var data = {};
             $(formdata).each(function(index, obj) {
@@ -341,6 +342,7 @@
                 , type: "POST"
                 , dataType: 'json'
                 , success: function(data) {
+                    $("#saveBtn").removeAttr('disabled');
                     $('#modal-form').modal('hide');
                     table.ajax.reload()
                     Swal.fire({
@@ -352,6 +354,7 @@
                     })
                 }
                 , error: function(data) {
+                    $("#saveBtn").removeAttr('disabled');
                     let error = data.responseJSON.errors
                     let nama = $("#nama")
                     let jenis = $("#jenis")
@@ -481,7 +484,7 @@
 
         //Ketik button update di tekan
         $('#editBtn').on('click', function(e) {
-
+            $(this).attr('disabled', 'true');
             var formdata = $("#modal-form form").serializeArray();
             var data = {};
             $(formdata).each(function(index, obj) {
@@ -493,7 +496,7 @@
                 , type: "POST"
                 , dataType: 'json'
                 , success: function(data) {
-                    console.log(data);
+                    $("#editBtn").removeAttr('disabled');
                     $('#modal-form').modal('hide');
                     table.ajax.reload()
                     Swal.fire({
@@ -505,6 +508,7 @@
                     })
                 }
                 , error: function(data) {
+                    $("#editBtn").removeAttr('disabled');
                     let error = data.responseJSON.errors
                     let nama = $("#nama")
                     let jenis = $("#jenis")
