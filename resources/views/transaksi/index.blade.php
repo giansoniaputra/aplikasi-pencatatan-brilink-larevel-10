@@ -85,7 +85,7 @@
                             <strong>Error: </strong><span id="error-jenis"></span>
                         </div>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 d-none">
                         <label for="jenis2" class="form-label">BRI/NON-BRI</label>
                         <select class="form-control" data-toggle="select2" data-width="100%" name="jenis2" id="jenis2">
                             <option value="bri" selected>BRILINK</option>
