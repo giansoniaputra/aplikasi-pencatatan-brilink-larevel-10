@@ -23,8 +23,7 @@
                 <button class="btn btn-secondary" id="search-tanggal">Cari</button>
                 <button class="btn btn-secondary" id="search-today">Today</button>
                 <button class="btn btn-secondary" id="search-1">-1</button>
-                <button class="btn btn-secondary" id="search-2">-2</button>
-                <button class="btn btn-secondary" id="search-3">-3</button>
+                <button class="btn btn-secondary" id="search-2">+1</button>
             </div>
         </div>
     </div>
@@ -262,15 +261,7 @@
         })
         $("#search-2").on("click", function() {
             let selectedDate = new Date(tanggal_awal.val());
-            selectedDate.setDate(selectedDate.getDate() - 2);
-            let formattedDate = selectedDate.toISOString().slice(0, 10);
-            tanggal_awal.val(formattedDate);
-            tanggal_akhir.val(formattedDate);
-            table.ajax.reload();
-        })
-        $("#search-3").on("click", function() {
-            let selectedDate = new Date(tanggal_awal.val());
-            selectedDate.setDate(selectedDate.getDate() - 3);
+            selectedDate.setDate(selectedDate.getDate() + 1);
             let formattedDate = selectedDate.toISOString().slice(0, 10);
             tanggal_awal.val(formattedDate);
             tanggal_akhir.val(formattedDate);
